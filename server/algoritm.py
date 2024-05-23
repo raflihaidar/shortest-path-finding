@@ -87,8 +87,8 @@ def generate_path(origin_point, target_point, perimeter):
     target_node = calculate_nearest_node(roadgraph, target_point[0], target_point[1])
     
     # This is the inbuild dijkstras function
-    #route = nx.shortest_path(roadgraph, origin_node, target_node, weight = 'length', method='dijkstra')
-    route = dijkstra_shortest_path(origin_node, target_node, roadgraph)
+    route = nx.shortest_path(roadgraph, origin_node, target_node, weight = 'length', method='dijkstra')
+    #route = dijkstra_shortest_path(origin_node, target_node, roadgraph)
 
     lat = []
     long = []
