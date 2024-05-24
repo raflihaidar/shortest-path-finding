@@ -1,21 +1,19 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template
 from flask_cors import CORS
 import algoritm
 import os
 
-app = app = Flask(__name__)
+app = app = Flask(__name__, template_folder="../client/templates", static_folder="../client/static")
 CORS(app, origins=["http://localhost:1234"])
 
 @app.route("/", methods=['GET'])
-def index():
-        return "Hello, World!"
+def index() :
+       return render_template("index.html")
 
 @app.route("/api/data", methods=['POST'])
 def short() :
         if request.is_json:
                 data = request.get_json()
-                OS_PATH = os.path.dirname(os.path.realpath('file'))
-                print(OS_PATH)
 
                 origin_latitude = float(data[0].get('lat'))
                 origin_longitude = float(data[0].get('lng'))
@@ -38,18 +36,16 @@ def short() :
                 long.append(x)
                 lat.append(y)
 
-                algoritm.plot_map(origin_point, target_point, long, lat, OS_PATH)
+                fig_json = algoritm.plot_map(origin_point, target_point, long, lat)
                 
                 
                 response = {
                 "message": "Data received successfully",
-                "data": data
+                "data": fig_json
                 }
                 return jsonify(response), 200
         else:
                 return jsonify({"message": "Request body must be JSON"}), 400
-      
-      
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=105, debug=True)

@@ -2,7 +2,6 @@ import networkx as nx
 import plotly.graph_objects as go
 import osmnx as ox
 import numpy as np
-import os
 import heapq
 
 # Menggunakan cache untuk OSMnx
@@ -100,7 +99,7 @@ def generate_path(origin_point, target_point, perimeter):
     
     return long, lat
    
-def plot_map(origin_point, target_point, long, lat, os_path):
+def plot_map(origin_point, target_point, long, lat):
     print(origin_point) 
     print(target_point) 
     print(long) 
@@ -166,9 +165,6 @@ def plot_map(origin_point, target_point, long, lat, os_path):
             'zoom': 12.2}
     )
 
-    # Save map in output folder
-    print("Saving image to output folder...");
-    fig.write_image(os_path + '/output/dijkstra_map.jpg', scale=3)
     # Show the map in the web browser
     print("Generating map in browser...");
 
