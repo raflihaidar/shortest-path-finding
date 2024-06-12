@@ -1,12 +1,13 @@
 from flask import Flask, request, jsonify, render_template
-from flask_cors import CORS
 import algoritm
-import os
 
 app = app = Flask(__name__, template_folder="../client/templates", static_folder="../client/static")
-CORS(app, origins=["http://localhost:1234"])
 
 @app.route("/", methods=['GET'])
+def getHome() :
+       return render_template("home.html")
+
+@app.route("/map", methods=['GET'])
 def index() :
        return render_template("index.html")
 
@@ -15,10 +16,10 @@ def short() :
         if request.is_json:
                 data = request.get_json()
 
-                origin_latitude = float(data[0].get('lat'))
-                origin_longitude = float(data[0].get('lng'))
-                target_latitude = float(data[1].get('lat'))
-                target_longitude = float(data[1].get('lng'))
+                origin_latitude = float(data[1].get('lat'))
+                origin_longitude = float(data[1].get('lng'))
+                target_latitude = float(data[0].get('lat'))
+                target_longitude = float(data[0].get('lng'))
 
                 origin_point = (origin_latitude, origin_longitude)
                 target_point = (target_latitude, target_longitude)
@@ -26,22 +27,13 @@ def short() :
                 print("Origin Point:", origin_point)
                 print("Target Point:", target_point)
 
-                long = []
-                lat = []
-
                 perimeter = 0.10 # Perimeter is the boundary of the roadmap
 
-                x, y = algoritm.generate_path(origin_point, target_point, perimeter)
-                
-                long.append(x)
-                lat.append(y)
-
-                fig_json = algoritm.plot_map(origin_point, target_point, long, lat)
-                
+                route_coords = algoritm.generate_path(origin_point, target_point, perimeter)
                 
                 response = {
                 "message": "Data received successfully",
-                "data": fig_json
+                "route": route_coords
                 }
                 return jsonify(response), 200
         else:
