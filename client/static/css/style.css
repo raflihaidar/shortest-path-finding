@@ -24,6 +24,56 @@ html {
   height: 100%;
   overflow-y: scroll;
 
+  #layer-2 {
+    padding: 1.5rem 0;
+    width: 100%;
+    display: none;
+
+    .input-section {
+      display: flex;
+      align-items: center;
+      justify-content: start;
+      width: 90%;
+      margin: 0 auto;
+
+      div {
+        border: 1px solid black;
+        width: 100%;
+        input {
+          width: 100%;
+        }
+      }
+
+      input,
+      button {
+        outline: none;
+        width: 90%;
+        margin: 0 auto 1rem auto;
+        padding: 0.6rem;
+        border: 2px solid #40a578;
+        border-radius: 15px;
+      }
+    }
+
+    button {
+      background-color: #fff;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    button:hover {
+      width: 90%;
+      background-color: #40a578;
+      color: #fff;
+      transition: 0.3s ease-in-out;
+    }
+
+    svg {
+      display: none;
+      width: 2rem;
+    }
+  }
+
   header {
     width: 100%;
     display: flex;

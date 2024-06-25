@@ -5,12 +5,14 @@ let map;
 let coordinate = [];
 let markers = [];
 let route = [];
+let polylines = [];
 
 map = L.map("map").setView([-7.871203275411919, 112.5268921078188], 14);
 
 let showAllBtn = document.getElementById("show-all-nodes");
 let drawBtn = document.getElementById("draw-graph");
 let isShow = false;
+
 const showAllNodes = () => {
   isShow = true;
   for (let i = 0; i < locations.length; i++) {
@@ -29,15 +31,20 @@ const hideAllNodes = () => {
   markers.forEach((marker) => {
     map.removeLayer(marker);
   });
+  polylines.forEach((polyline) => {
+    map.removeLayer(polyline);
+  });
+  polylines = [];
 };
 
 const drawGraph = () => {
   for (let i = 0; i < locations.length; i++) {
     if (i + 1 < locations.length) {
-      L.polyline([
+      let polyline = new L.polyline([
         [locations[i][1], locations[i][2]],
         [locations[i + 1][1], locations[i + 1][2]],
       ]).addTo(map);
+      polylines.push(polyline);
     }
   }
 };
@@ -66,7 +73,6 @@ const onMapClick = async (e) => {
   try {
     if (coordinate.length < 2) {
       let marker = new L.circleMarker(e.latlng, { color: "#Ff0000" });
-
       marker.addTo(map);
 
       let payload = {
