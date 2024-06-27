@@ -11,13 +11,14 @@ map = L.map("map").setView([-7.871203275411919, 112.5268921078188], 14);
 
 let showAllBtn = document.getElementById("show-all-nodes");
 let drawBtn = document.getElementById("draw-graph");
+const sideBar = document.querySelector(".side-bar");
 let isShow = false;
 
 const showAllNodes = () => {
   isShow = true;
   for (let i = 0; i < locations.length; i++) {
-    let marker = new L.marker([locations[i][1], locations[i][2]])
-      .bindPopup(locations[i][0])
+    let marker = new L.marker([locations[i].lat, locations[i].lng])
+      .bindPopup(locations[i].name)
       .addTo(map)
       .on("click", onMapClick);
     markers.push(marker);
@@ -41,8 +42,8 @@ const drawGraph = () => {
   for (let i = 0; i < locations.length; i++) {
     if (i + 1 < locations.length) {
       let polyline = new L.polyline([
-        [locations[i][1], locations[i][2]],
-        [locations[i + 1][1], locations[i + 1][2]],
+        [locations[i].lat, locations[i].lng],
+        [locations[i + 1].lat, locations[i + 1].lng],
       ]).addTo(map);
       polylines.push(polyline);
     }
@@ -124,8 +125,8 @@ L.control.scale().addTo(map);
 map.setMaxBounds(cityBounds);
 
 for (let i = 0; i < locations.length; i++) {
-  let marker = new L.marker([locations[i][1], locations[i][2]])
-    .bindPopup(locations[i][0])
+  let marker = new L.marker([locations[i].lat, locations[i].lng])
+    .bindPopup(locations[i].name)
     .addTo(map)
     .on("click", onMapClick);
 
@@ -151,3 +152,15 @@ locationList.forEach((el, index) => {
 markers.forEach((marker) => {
   map.removeLayer(marker);
 });
+
+// menu list in Mobile
+document.querySelector(".full-screen-toggle").addEventListener("click", () => {
+  sideBar.classList.toggle("side-bar-fullscreen");
+});
+
+//searching
+const searchbar = document.querySelector(".search-input");
+
+// searchbar.addEventListener("input", () => {
+//   loca
+// });
