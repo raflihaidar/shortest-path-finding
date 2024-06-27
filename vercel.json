@@ -3,8 +3,8 @@
   "builds": [{ "src": "/server/server.py", "use": "@vercel/python" }],
   "routes": [{ "src": "/(.*)", "dest": "/server/server.py" }],
   "functions": {
-    "server/": {
-      "excludeFiles": "{.cache, _pycache_}/*"
+    "server/**": {
+      "excludeFiles": "{.next,*.cache,node_modules,public,app}/**"
     }
   }
 }
