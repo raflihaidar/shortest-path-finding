@@ -1,12 +1,12 @@
-import networkx as nx
-import osmnx as ox
-import numpy as np
-import heapq
+from networkx import shortest_path
+from osmnx import config, graph_from_bbox
+from numpy import array, linalg, argmin
+from heapq import heappop, heappush
 
 # File Project https://github.com/raflihaidar/shortest-path-finding
 
 # Menggunakan cache untuk OSMnx agar mempercepat pemrosesan dan menampilkan log di konsol
-ox.config(use_cache=True, log_console=True)
+config(use_cache=True, log_console=True)
 
 def dijkstra_shortest_path(start_node, end_node, road_graph):
     # Inisialisasi jarak dari node awal ke semua node lain dengan nilai tak hingga
@@ -21,7 +21,7 @@ def dijkstra_shortest_path(start_node, end_node, road_graph):
 
     while priority_queue:
         # Mengambil node dengan jarak terpendek dari priority queue
-        current_distance, current_node = heapq.heappop(priority_queue)
+        current_distance, current_node = heappop(priority_queue)
 
         if current_node in visited:
             continue  # Jika node sudah dikunjungi, lanjutkan ke iterasi berikutnya
@@ -40,7 +40,7 @@ def dijkstra_shortest_path(start_node, end_node, road_graph):
             if new_distance < distances[neighbor]:
                 distances[neighbor] = new_distance
                 predecessors[neighbor] = current_node
-                heapq.heappush(priority_queue, (new_distance, neighbor))
+                heappush(priority_queue, (new_distance, neighbor))
 
     # Mengumpulkan jalur dari node tujuan ke node awal
     path = []
@@ -53,13 +53,13 @@ def dijkstra_shortest_path(start_node, end_node, road_graph):
 
 def calculate_nearest_node(graph, latitude, longitude):
     # Mengonversi latitude dan longitude menjadi array 2D
-    target_coords = np.array([[longitude, latitude]])
+    target_coords = array([[longitude, latitude]])
     # Mengekstraksi koordinat semua node dalam graf
-    node_coords = np.array([[data['x'], data['y']] for _, data in graph.nodes(data=True)])
+    node_coords = array([[data['x'], data['y']] for _, data in graph.nodes(data=True)])
     # Menghitung jarak Euclidean antara titik tujuan dan semua node
-    distances = np.linalg.norm(target_coords - node_coords, axis=1)
+    distances = linalg.norm(target_coords - node_coords, axis=1)
     # Mendapatkan indeks node terdekat
-    nearest_node_index = np.argmin(distances)
+    nearest_node_index = argmin(distances)
     # Mengambil identifier node terdekat
     nearest_node = list(graph.nodes())[nearest_node_index]
 
@@ -91,14 +91,14 @@ def generate_path(origin_point, target_point, perimeter):
     mode = 'drive'  # Mode 'drive', 'bike', 'walk' (walk biasanya terlalu lambat)
 
     # Mengambil graf jalan dari wilayah yang ditentukan menggunakan OSMnx
-    roadgraph = ox.graph_from_bbox(north+perimeter, south-perimeter, east+perimeter, west-perimeter, network_type=mode, simplify=False)
+    roadgraph = graph_from_bbox(north+perimeter, south-perimeter, east+perimeter, west-perimeter, network_type=mode, simplify=False)
 
     # Menghitung node terdekat dari titik asal dan tujuan
     origin_node = calculate_nearest_node(roadgraph, origin_point[0], origin_point[1])
     target_node = calculate_nearest_node(roadgraph, target_point[0], target_point[1])
     
     # Menggunakan algoritma Dijkstra bawaan dari NetworkX untuk menemukan jalur terpendek
-    route = nx.shortest_path(roadgraph, origin_node, target_node, weight='length', method='dijkstra')
+    route = shortest_path(roadgraph, origin_node, target_node, weight='length', method='dijkstra')
 
     # Mengonversi jalur yang ditemukan menjadi koordinat (latitude, longitude)
     route_map = []
